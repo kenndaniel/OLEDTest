@@ -27,9 +27,14 @@ void setup()
   delay(5000);
   OLEDmsg(test, 2);
 
-  test = "This is a long message that will wrap to the next line";
+    test = "Info message line 3";
+
   delay(5000);
-  OLEDmsgMultiLine(test);
+  OLEDmsg(test, 3);
+
+  test = "This is a long message that will wrap";
+  delay(5000);
+  OLEDmsgMultiLine(test,2);
   delay(5000);
   void OLEDclearAll();
 }
