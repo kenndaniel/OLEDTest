@@ -8,29 +8,29 @@ void setup()
   String test;
   OLEDinit();
 
-  // OLEDmsg("Message on line 1 "); // Defaults to line 1
+  OLEDmsg("Message on line 1 "); // Defaults to line 1
 
-  // test = "Replace message line1";
+  test = "Replace message line1";
 
-  // delay(3000);
-  // OLEDmsg(test, 1);
+  delay(2000);
+  OLEDmsg(test);
 
-  // test = "Info message line 2";
+  test = "Info message line 2";
 
-  // delay(3000);
-  // OLEDmsg(test, 2);
+  delay(2000);
+  OLEDmsg(test, 2);
 
-  //   test = "Info message line 3";
+    test = "Info message line 3";
 
-  // delay(3000);
-  // OLEDmsg(test, 3);
+  delay(2000);
+  OLEDmsg(test, 3);
 
   test = "Info message line 4";
   
-  delay(3000);
+  delay(2000);
   
   OLEDmsg(test, 4);
-  delay(3000);
+  delay(2000);
     OLEDerrorMsg("Error message", 2);
 
   test = "This is a long message that will wrap";
