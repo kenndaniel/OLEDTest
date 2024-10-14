@@ -113,6 +113,7 @@ int bottomLine = 0; // Bottom Line of rotating display
 
 void OLEDrotate(String msg, MessageType type)
 { // Manages and displays the information for a 4 line rotating display
+  // Only works with single line messages of less than 21 characters
   // MessageType is either ERROR or INFO
 
   if (OLEDnotWorking)
@@ -155,4 +156,5 @@ void OLEDinit()
     OLEDnotWorking = true;
   }
   OLEDclearAll();
+  return;
 }
