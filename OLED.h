@@ -27,7 +27,7 @@ void OLEDclearLine(int line)
   if (OLEDnotWorking)
     return;
   int lin = line - 1;
-  display.fillRect(0, 10 * lin, SCREEN_WIDTH, 11, SSD1306_BLACK); // Overwrite the line at y = 10*line, height = 8
+  display.fillRect(0, 8 * lin, SCREEN_WIDTH, 8, SSD1306_BLACK); // Overwrite the line at y = 10*line, height = 8
   display.display();
 }
 
@@ -35,14 +35,14 @@ void OLEDmsg(String msg)
 { // Writes a message on line 1
   if (OLEDnotWorking)
     return;
-  OLEDclearLine(1);
+  OLEDclearAll();
   display.setCursor(0, 0);
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.display();
-  String message = msg.substring(0, 21);
-  display.print(message);
+  // String message = msg.substring(0, 21);
+  display.print(msg);
   display.display();
 }
 
@@ -54,7 +54,7 @@ void OLEDmsg(String msg, int line)
     return;
   OLEDclearLine(line);
   int lin = line - 1;
-  display.setCursor(0, lin * 12);
+  display.setCursor(0, lin * 8);
 
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
@@ -71,9 +71,9 @@ void OLEDerrorMsg(String msg, int line)
   if (OLEDnotWorking)
     return;
   int lin = line - 1;
-  display.fillRect(0, 10 * lin, SCREEN_WIDTH, 10, SSD1306_WHITE); // Overwrite the line at y = 10*line, height = 8
+  display.fillRect(0, 8 * lin, SCREEN_WIDTH, 8, SSD1306_WHITE); // Overwrite the line at y = 10*line, height = 8
   display.display();
-  display.setCursor(0, lin * 12);
+  display.setCursor(0, lin * 8);
 
   display.setTextSize(1);
   display.setTextColor(SSD1306_BLACK);
@@ -96,9 +96,55 @@ void OLEDmsgMultiLine(String msg, int startLine)
   for (int i = startLine; i < startLine + numLines; i++)
   {
     OLEDclearLine(i);
-    int iChar = i-startLine;
-    OLEDmsg(msg.substring(iChar*21,(iChar+1)*21),i);
+    int iChar = i - startLine;
+    OLEDmsg(msg.substring(iChar * 21, (iChar + 1) * 21), i);
   }
+}
+
+// Data for rotating messages
+char lineArray[4][22] = {"                     ", "                     ", "                     ", "                     "};
+enum MessageType
+{
+  ERROR,
+  INFO
+};
+MessageType lineArrayType[4] = {INFO, INFO, INFO, INFO};
+int bottomLine = 0; // Bottom Line of rotating display
+
+void OLEDrotate(String msg, MessageType type)
+{ // Manages and displays the information for a 4 line rotating display
+  // MessageType is either ERROR or INFO
+
+  if (OLEDnotWorking)
+    return;
+
+  if (bottomLine > 3)
+  {
+    bottomLine = 3;
+    Serial.println(" ");
+    // move existing lines up one
+    for (int i = 0; i < bottomLine; i++)
+    {
+      strcpy(lineArray[i], lineArray[i + 1]);
+      lineArrayType[i] = lineArrayType[i + 1];
+    }
+  }
+  // Copy the first 21 characters of the String object into the 2nd element of the array
+  msg.substring(0, 21).toCharArray(lineArray[bottomLine], 22);
+  lineArrayType[bottomLine] = type;
+
+  for (int i = 0; i < 4; i++)
+  {
+    if (lineArrayType[i] == INFO)
+    {
+      OLEDmsg(String(lineArray[i]), i + 1);
+    }
+    else
+    {
+      OLEDerrorMsg(String(lineArray[i]), i + 1);
+    }
+  }
+  bottomLine++;
 }
 
 void OLEDinit()
